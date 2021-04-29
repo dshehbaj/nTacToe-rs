@@ -1,4 +1,4 @@
-struct Player {
+pub struct Player {
     name: String,
     symbol: char
 }
