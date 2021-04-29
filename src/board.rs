@@ -1,59 +1,83 @@
 pub struct Board {
+    empty_value: i32,
     size: i32,
     rows: Vec<Vec<i32>>
 }
 
 impl Board {
-    fn new(size: i32) -> Self {
-        let mut rows: Vec<Vec<i32>> = Vec::with_capacity(size as usize);
-        for i in 0..size {
+    pub fn new(size: i32, empty_value: i32) -> Self {
+        let mut rows: Vec<Vec<i32>> = Vec::new();
+        for _i in 0..size {
             let mut row: Vec<i32> = Vec::with_capacity(size as usize);
-            row.resize(size as usize, 10);
+            row.resize(size as usize, empty_value);
+            rows.push(row);
         }
         return Board {
+            empty_value,
             size,
             rows
         };
     }
 
-    fn check_rows(&self) -> bool {
-        let mut flag: bool = true;
+    pub fn check_rows(&self) -> bool {
         for row in &self.rows {
-            flag = self.check_row(row);
+            if self.check_row(row) {
+                return true;
+            }
         }
-        return flag;
+        return false;
     }
 
-    fn check_columns(&self) -> bool {
-        return true;
+    pub fn check_columns(&self) -> bool {
+        for i in 0..self.size {
+            let mut row: Vec<i32> = Vec::new();
+            for j in 0..self.size {
+                row.push(self.rows[j as usize][i as usize]);
+            }
+            if self.check_row(&row) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    fn check_diagonals(&self) -> bool {
-        return true;
+    pub fn check_diagonals(&self) -> bool {
+        let mut diag1: Vec<i32> = Vec::new();
+        let mut diag2: Vec<i32> = Vec::new();
+        for i in 0..self.size {
+            diag1.push(self.rows[i as usize][i as usize]);
+            diag2.push(self.rows[(self.size - i) as usize][i as usize]);
+        }
+        return self.check_row(&diag1) || self.check_row(&diag2);
     }
 
-    fn check_row(&self, row: &Vec<i32>) -> bool {
+    pub fn check_row(&self, row: &Vec<i32>) -> bool {
         for i in 0..(row.len() - 1) {
-            if row[i] != row[i + 1] {
+            if row[i] == self.empty_value || row[i] != row[i + 1] {
                 return false;
             }
         }
         return true;
     }
 
-    fn is_occupied(&self, idx: i32) -> bool {
+    pub fn is_occupied(&self, idx: i32) -> bool {
         let row: usize = (idx / self.size) as usize;
         let col: usize = (idx % self.size) as usize;
-        return self.rows[row][col] != 10;
+        return self.rows[row][col] != self.empty_value;
     }
 
-    fn check_board(&self) -> bool {
+    pub fn check_board(&self) -> bool {
         return self.check_diagonals()
             && self.check_columns()
             && self.check_rows();
     }
 
-    fn get_grid(&self) -> Vec<Vec<i32>> {
+    pub fn get_grid(&self) -> Vec<Vec<i32>> {
         return self.rows.to_vec();
     }
+
+    pub fn get_size(&self) -> i32 {
+        return self.size;
+    }
 }
+
