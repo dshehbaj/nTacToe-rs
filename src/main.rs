@@ -38,7 +38,7 @@ fn main() {
         println!("\n");
         let curr_player: &player::Player = player_list.get(idx).unwrap();
         println!("{}'s turn!", curr_player.get_name());
-        utils::print_grid(&board.get_grid(), size);
+        utils::print_grid(&board.get_grid(), board.get_size());
         buff.clear();
         stdin().read_line(&mut buff).expect("Error while taking input");
         let coord: i32 = utils::translate(buff.trim().parse().unwrap());
@@ -48,7 +48,7 @@ fn main() {
             spots -= 1;
             if board.check_board() {
                 println!();
-                utils::print_grid(&board.get_grid(), size);
+                utils::print_grid(&board.get_grid(), board.get_size());
                 println!("{} is the winner!", curr_player.get_name());
                 break;
             }
@@ -60,7 +60,7 @@ fn main() {
 
     if spots == 0 {
         println!("\nDraw!");
-        utils::print_grid(&board.get_grid(), size);
+        utils::print_grid(&board.get_grid(), board.get_size());
     }
 
     return;
