@@ -21,7 +21,7 @@ impl Board {
 
     pub fn check_rows(&self) -> bool {
         for row in &self.rows {
-            if self.check_row(row) {
+            if self.check_row(&row) {
                 return true;
             }
         }
@@ -46,7 +46,8 @@ impl Board {
         let mut diag2: Vec<i32> = Vec::new();
         for i in 0..self.size {
             diag1.push(self.rows[i as usize][i as usize]);
-            diag2.push(self.rows[(self.size - i) as usize][i as usize]);
+            diag2.push(self.rows[(self.size - 1 - i) as usize][i as usize]);
+
         }
         return self.check_row(&diag1) || self.check_row(&diag2);
     }
@@ -60,6 +61,16 @@ impl Board {
         return true;
     }
 
+    pub fn place_mark(&mut self, idx: i32, mark: char) -> bool {
+        if !self.is_occupied(idx) {
+            let row: usize = (idx / self.size) as usize;
+            let col: usize = (idx % self.size) as usize;
+            self.rows[row][col] = mark as i32;
+            return true;
+        }
+        return false;
+    }
+
     pub fn is_occupied(&self, idx: i32) -> bool {
         let row: usize = (idx / self.size) as usize;
         let col: usize = (idx % self.size) as usize;
@@ -68,8 +79,8 @@ impl Board {
 
     pub fn check_board(&self) -> bool {
         return self.check_diagonals()
-            && self.check_columns()
-            && self.check_rows();
+            || self.check_columns()
+            || self.check_rows();
     }
 
     pub fn get_grid(&self) -> Vec<Vec<i32>> {
